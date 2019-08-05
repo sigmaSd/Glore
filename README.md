@@ -4,7 +4,7 @@
 
 **HowTo:**
 
-1- Use `glore::WRITER` at the root of your project
+1- Use `glore::GLORE` at the root of your project
 
 2- Add a log target with `glore::init($target)` `$target` is anything that impl `Write`
 
@@ -13,9 +13,9 @@
 *example of usage:*
 
 ```rust
-use glore::{init, log, WRITER};
+use glore::{init, log, GLORE};
 
-let f = std::fs::OpenOptions::new()
+	let f = std::fs::OpenOptions::new()
 	.append(true)
 	.open("log.txt")
 	.unwrap();

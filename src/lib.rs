@@ -2,7 +2,7 @@
 //!
 //! **HowTo:**
 //!
-//! 1- Use `glore::WRITER` at the root of your project
+//! 1- Use `glore::GLORE` at the root of your project
 //!
 //! 2- Add a log target with `glore::init($target)` `$target` is anything that impl `Write`
 //!
@@ -11,14 +11,14 @@
 //! *example of usage:*
 //!
 //! ```rust
-//! use glore::{init, log, WRITER};
+//! use glore::{init, log, GLORE};
 //! # fn main() {
 //!
 //!	let f = std::fs::OpenOptions::new()
 //! 	.append(true)
 //! 	.open("log.txt")
 //! 	.unwrap();
-//! let mut stdout = std::io::stdout();
+//! let stdout = std::io::stdout();
 //!
 //! init(stdout);
 //! log!("hello ====");
@@ -37,8 +37,8 @@
 use std::io::Write;
 /// Use this static at the root of your project to enable logging
 ///
-/// `use glore::WRITER;`
-pub static mut WRITER: Option<&mut Write> = None;
+/// `use glore::GLORE;`
+pub static mut GLORE: Option<&mut Write> = None;
 
 /// Use this function to add a log target
 /// ```rust
@@ -49,7 +49,7 @@ pub fn init(w: impl Write + 'static) {
     unsafe {
         let l = Box::new(w);
         let leaked = Box::leak(l);
-        WRITER = Some(leaked);
+        GLORE = Some(leaked);
     }
 }
 
@@ -60,11 +60,14 @@ pub fn init(w: impl Write + 'static) {
 macro_rules! log {
     ($($arg:tt)*) => (
     	std::sync::Once::new().call_once(||{
-   		use crate::WRITER;
+   		use crate::GLORE;
 
    	    unsafe {
-   	    	if let Some(writer) = WRITER.as_mut() {
-   	  			writeln!(writer, "{}", format_args!($($arg)*));
+   	    	if let Some(writer) = GLORE.as_mut() {
+   	  			match writeln!(writer, "{}", format_args!($($arg)*)) {
+   	  				Ok(_) => (),
+   	  				Err(e) => {panic!("Error writing to logger\nreason: {}", e);}
+   	  			}
    	    	} else {
    	    		panic!("Nothing to log to yet, use init() before logging");
    	    	}
@@ -82,7 +85,7 @@ mod tests {
             .append(true)
             .open("log.txt")
             .unwrap();
-        let mut stdout = std::io::stdout();
+        let stdout = std::io::stdout();
 
         init(stdout);
         log!("hello ====");
@@ -90,7 +93,7 @@ mod tests {
 
         init(f);
         log!("hello ====");
-        std::thread::spawn(|| {
+        let _ = std::thread::spawn(|| {
             log!("world");
         })
         .join();
