@@ -1,6 +1,6 @@
-# glore
+# Glore
 
-## glore at log
+## Rust Log
 
 **HowTo:**
 
