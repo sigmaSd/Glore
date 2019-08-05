@@ -4,7 +4,7 @@
 
 **HowTo:**
 
-1- Use `glore::Writer` at the root of your project
+1- Use `glore::WRITER` at the root of your project
 
 2- Add a log target with `glore::init($target)` `$target` is anything that impl `Write`
 
