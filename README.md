@@ -15,7 +15,7 @@
 ```rust
 use glore::{init, log, WRITER};
 
-	let f = std::fs::OpenOptions::new()
+let f = std::fs::OpenOptions::new()
 	.append(true)
 	.open("log.txt")
 	.unwrap();
