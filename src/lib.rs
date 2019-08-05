@@ -42,8 +42,8 @@ pub static mut GLORE: Option<&mut Write> = None;
 
 /// Use this function to add a log target
 /// ```rust
-///		let mut stdout = std::io::stdout();
-///		glore::init(stdout);
+///	let stdout = std::io::stdout();
+///	glore::init(stdout);
 /// ```
 pub fn init(w: impl Write + 'static) {
     unsafe {

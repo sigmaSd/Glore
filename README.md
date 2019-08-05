@@ -19,7 +19,7 @@ let f = std::fs::OpenOptions::new()
 	.append(true)
 	.open("log.txt")
 	.unwrap();
-let mut stdout = std::io::stdout();
+let stdout = std::io::stdout();
 
 init(stdout);
 log!("hello ====");
