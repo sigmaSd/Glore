@@ -64,7 +64,7 @@ macro_rules! log {
 
    	    unsafe {
    	    	if let Some(writer) = GLORE.as_mut() {
-   	  			match writeln!(writer, "{}", format_args!($($arg)*)) {
+   	  			match writeln!(writer, "{} line {}: {}", file!(), line!(), format_args!($($arg)*)) {
    	  				Ok(_) => (),
    	  				Err(e) => {panic!("Error writing to logger\nreason: {}", e);}
    	  			}
