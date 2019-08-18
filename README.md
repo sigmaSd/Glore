@@ -33,5 +33,5 @@ std::thread::spawn(|| {
 .join();
 ```
 
-## Important
+**Important**
 - This crate uses unsafe (to modify global log)
