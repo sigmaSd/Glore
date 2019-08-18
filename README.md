@@ -2,6 +2,9 @@
 
 ## Rust Log
 
+**Warning:**
+- This crate contains one unsafe usage and it's unsound, hopefully the unsafe line will be removed on next release
+
 **HowTo:**
 
 1- Use `glore::GLORE` at the root of your project
