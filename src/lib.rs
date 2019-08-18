@@ -35,10 +35,11 @@
 //!
 
 use std::io::Write;
+use std::sync::Mutex;
 /// Use this static at the root of your project to enable logging
 ///
 /// `use glore::GLORE;`
-pub static mut GLORE: Option<&mut Write> = None;
+pub static mut GLORE: Option<Mutex<&mut Write>> = None;
 
 /// Use this function to add a log target
 /// ```rust
@@ -49,7 +50,7 @@ pub fn init(w: impl Write + 'static) {
     unsafe {
         let l = Box::new(w);
         let leaked = Box::leak(l);
-        GLORE = Some(leaked);
+        GLORE = Some(Mutex::new(leaked));
     }
 }
 
@@ -64,7 +65,7 @@ macro_rules! log {
 
    	    unsafe {
    	    	if let Some(writer) = GLORE.as_mut() {
-   	  			match writeln!(writer, "{} line {}: {}", file!(), line!(), format_args!($($arg)*)) {
+   	  			match writeln!(writer.lock().unwrap(), "{} line {}: {}", file!(), line!(), format_args!($($arg)*)) {
    	  				Ok(_) => (),
    	  				Err(e) => {panic!("Error writing to logger\nreason: {}", e);}
    	  			}
@@ -93,9 +94,13 @@ mod tests {
 
         init(f);
         log!("hello ====");
-        let _ = std::thread::spawn(|| {
-            log!("world");
-        })
-        .join();
+        let mut threads = vec![];
+
+        for i in 0..10 {
+            threads.push(std::thread::spawn(move || {
+                log!("{}- world", i);
+            }));
+        }
+        threads.into_iter().for_each(|t| t.join().unwrap());
     }
 }
