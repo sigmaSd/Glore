@@ -82,10 +82,12 @@ mod tests {
     use super::{init, log};
     #[test]
     fn it_works() {
-        let f = std::fs::OpenOptions::new()
-            .append(true)
-            .open("log.txt")
-            .unwrap();
+        let f = if let Ok(f) = std::fs::OpenOptions::new().append(true).open("log.txt") {
+            f
+        } else {
+            std::fs::File::create("log.text").unwrap()
+        };
+
         let stdout = std::io::stdout();
 
         init(stdout);
