@@ -1,3 +1,6 @@
+**0.1.4**
+- Fix warning about `dyn`
+
 **0.1.3**
 - Fix unsafe usage (use Mutex to protect the writer)
 

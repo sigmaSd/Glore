@@ -39,7 +39,7 @@ use std::sync::Mutex;
 /// Use this static at the root of your project to enable logging
 ///
 /// `use glore::GLORE;`
-pub static mut GLORE: Option<Mutex<&mut Write>> = None;
+pub static mut GLORE: Option<Mutex<&mut dyn Write>> = None;
 
 /// Use this function to add a log target
 /// ```rust
